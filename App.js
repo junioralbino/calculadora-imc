@@ -1,34 +1,60 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TextInput, Button, Text, View } from 'react-native';
+import React, { useState} from 'react';
+import { StyleSheet, TextInput, Button, Text, View, State } from 'react-native';
 
 // import {  } from 'react-native-paper';
 
 export default function App() {
+  const [imc, setImc] = useState(0)
+  const [peso, setPeso] = useState(0)
+  const [altura, setAltura] = useState(0)
+  const [legenda, setLegenda] = useState('Indeterminido')
+
   const calcularIMC = () => {
-    const peso = 94;
-    const altura = 1.83;
+    const resultado = peso / (altura * altura);
 
-    const imc = peso / (altura * altura);
+    setImc(Math.ceil(resultado))
 
-    alert(imc);
+    if(resultado < 18.5){
+      setLegenda('Magreza')
+    }else if(resultado >= 18.5 && resultado < 25){
+      setLegenda('Normal')
+    }else if(resultado >= 25 && resultado < 30){
+      setLegenda('Sobrepeso')
+    }else if(resultado >= 30 && resultado < 40){
+      setLegenda('Obesidade')
+    }else if(resultado >= 40){
+      setLegenda('Obesidade Grave')
+    }else{
+      setLegenda('Ops.. não tem valor digitado!')
+      setImc('Inválido')
+    }
   }
-
-
-  const imc = 25;
-  const legenda = 'Normal';
 
   return (
     <View style={styles.app}>
     <StatusBar style="auto" />
-      <Text style={styles.legenda}>Seu IMC</Text>
+
+    <Text style={styles.legenda}>Seu imc</Text>
+
       <View>
         <Text style={styles.resultado}>{imc}</Text>
         <Text style={styles.diagnostico}>{legenda}</Text>
       </View>
 
       <View>
-        <TextInput style={styles.peso}/>
-        <TextInput style={styles.altura}/>
+        <TextInput 
+           style={styles.peso}
+           onChangeText={value => {
+           setPeso(value.replace(',', '.'));
+           }}
+           />
+        <TextInput 
+           style={styles.altura}
+          onChangeText={value => {
+            setAltura(value.replace(',', '.'))
+          }}
+           />
         <Button title='Calcular' onPress={calcularIMC}/>
       </View>
     </View>
